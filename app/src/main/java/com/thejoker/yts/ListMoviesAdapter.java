@@ -60,7 +60,6 @@ public class ListMoviesAdapter extends RecyclerView.Adapter<ListMoviesAdapter.Vi
             if(clickListener!=null){
                 clickListener.itemClicked(v,getAdapterPosition());
 
-
             }
 
         }
@@ -75,6 +74,7 @@ public class ListMoviesAdapter extends RecyclerView.Adapter<ListMoviesAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolderListMovies holder, int position)  {
             MovieList currentMovie = listMovies.get(position);
+        holder.itemView.setTag(listMovies.get(position));
         holder.movieTitle.setText(currentMovie.getTitle());
         holder.movieYear.setText(Integer.toString(currentMovie.getYear()));
         String url = currentMovie.getUrlThumbnail();

@@ -6,6 +6,7 @@ public interface Keys {
 
         String KEYS_MOVIE = "movie";
         String KEYS_ID = "id";
+
         String KEYS_TITLE_LONG = "title_long";
         String KEYS_RATING = "rating";
         String KEYS_DESCRIPTION = "description_full";
@@ -19,6 +20,7 @@ public interface Keys {
         String KEYS_TITLE = "title_long";
         String KEYS_RATING ="rating";
         String KEYS_YEAR = "year";
+        String KEYS_RUNTIME = "runtime";
         String KEYS_THUMBNAIL = "medium_cover_image";
     }
 }

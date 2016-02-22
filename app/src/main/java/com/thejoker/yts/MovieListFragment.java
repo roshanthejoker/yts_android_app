@@ -1,6 +1,5 @@
 package com.thejoker.yts;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -69,10 +68,7 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     }
     public void updateMovieList() {
         RequestQueue mrequestQueue = Volley.newRequestQueue(getActivity());
-        final ProgressDialog loading = new ProgressDialog(getActivity());
-        loading.setCanceledOnTouchOutside(false);
-        loading.setMessage("Please Wait!");
-        loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
 
 
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl(pageNumber),
@@ -101,17 +97,18 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
                                 movieList.setUrlThumbnail(currentMoviePoster);
                                 listMovies.add(movieList);
                             }
+
                         }
                         catch(JSONException exception){
                             exception.printStackTrace();
                         }
                         listMoviesAdapter.setListMovies(listMovies);
-                        loading.dismiss();
+
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                loading.dismiss();
+
                 Snackbar.make(getView(),"Please Check Your Internet Connection!",Snackbar.LENGTH_INDEFINITE).setAction("Go to Settings",
                         new View.OnClickListener() {
                             @Override
@@ -123,7 +120,7 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
         });
         mrequestQueue.add(jsonObjectRequest);
 
-        loading.show();
+
     }
     public void updateNextMovieList() {
         RequestQueue mrequestQueue = Volley.newRequestQueue(getActivity());
@@ -190,8 +187,9 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
 
     @Override
     public void itemClicked(View view, int position) {
+        String id = String.valueOf(listMovies.get(position).getId());
         Intent i = new Intent(getActivity(),MovieDetailsActivity.class);
-        i.putExtra("movieId",listMovies.get(position).getId());
+        i.putExtra("movieId", id);
 
         startActivity(i);
     }

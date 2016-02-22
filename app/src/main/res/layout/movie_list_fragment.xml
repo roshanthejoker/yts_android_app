@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1d1d1d">
+    android:background="#1d1d1d"
+    android:clipToPadding="false"
+    android:outlineProvider="bounds">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_movies"
@@ -10,6 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
         android:padding="10dp"
+        android:elevation="30dp"
         android:clickable="true"
         android:layout_gravity="start"
         android:overScrollMode="never"

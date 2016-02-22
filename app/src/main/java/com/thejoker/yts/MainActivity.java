@@ -14,8 +14,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.movie_list_frame,new MovieListFragment());
+        ft.replace(R.id.movie_list_frame, new MovieListFragment());
         ft.commit();
+
 
 
     }
