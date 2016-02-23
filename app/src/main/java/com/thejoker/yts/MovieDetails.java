@@ -11,40 +11,11 @@ public class MovieDetails {
     private long rating;
     private String youtube_id;
     private String urlThumbnail;
-    private String downloadLink;
-    private String quality;
-    private String fileSize;
+
     public MovieDetails(){
 
     }
 
-    public String getQuality() {
-
-        return quality;
-    }
-
-    public void setQuality(String quality)
-    {
-        this.quality = quality;
-    }
-
-    public String getFileSize() {
-
-        return fileSize;
-    }
-
-    public void setFileSize(String fileSize) {
-        this.fileSize = fileSize;
-    }
-
-    public String getDownloadLink() {
-        return downloadLink;
-    }
-
-    public void setDownloadLink(String downloadLink) {
-
-        this.downloadLink = downloadLink;
-    }
 
 
     public int getId() {
@@ -111,10 +82,8 @@ public class MovieDetails {
              int year,
              long rating,
              String youtube_id,
-             String urlThumbnail,
-              String downloadLink,
-              String quality,
-              String fileSize
+             String urlThumbnail
+
     )
     {
         this.id = id;
@@ -124,19 +93,15 @@ public class MovieDetails {
         this.rating = rating;
         this.youtube_id = youtube_id;
         this.urlThumbnail = urlThumbnail;
-        this.downloadLink = downloadLink;
-        this.quality = quality;
-        this.fileSize = fileSize;
+
     }
     @Override
     public String toString(){
-        return "ID"+id+
-                "Title"+title+
-                "Summary"+Summary+
-                "Year"+year+
-                "Rating"+rating+
-                "Url"+downloadLink+
-                "fileSize"+fileSize+
-                "Quality"+quality;
+        return "ID "+id+
+                "Title "+title+
+                "Summary "+Summary+
+                "Year "+year+
+                "Rating "+rating;
+
     }
 }
