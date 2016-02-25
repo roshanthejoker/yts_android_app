@@ -11,7 +11,7 @@ public interface Keys {
         String KEYS_RATING = "rating";
         String KEYS_DESCRIPTION = "description_full";
         String KEY_YOUTUBE_ID = "yt_trailer_code";
-        String KEYS_COVER = "small_cover_image";
+        String KEYS_COVER = "large_cover_image";
         String KEYS_TORRENTS = "torrents";
     }
     interface EndPointMovieList{
