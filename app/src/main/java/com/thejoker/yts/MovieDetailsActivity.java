@@ -2,7 +2,12 @@ package com.thejoker.yts;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,11 +44,24 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private String movieQuality1080p;
     private String moviefileSize1080p;
 
+    private CoordinatorLayout mCoordinator;
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private FloatingActionButton mFab;
+    private Toolbar mToolbar;
+    private CollapsingToolbarLayout collapseBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getLayoutInflater().setFactory(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        mToolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+        setSupportActionBar(mToolbar);
+        collapseBar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapseBar.setTitle("Here come the Movie Name!");
+
+
         Intent i = getIntent();
         String movieIdString = i.getExtras().getString("movieId");
         int movieId = Integer.parseInt(movieIdString);
@@ -57,12 +76,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 movieSummary = detailsMovies.get(0).getSummary();
                 movieYear = detailsMovies.get(0).getYear();
                 movieRating = detailsMovies.get(0).getRating();
+
+
+
                 movieQuality720p = downloadDetails.get(0).getQuality();
                 movieDownloadLink720p = downloadDetails.get(0).getDownloadLink();
                 moviefileSize720p = downloadDetails.get(0).getFileSize();
                 movieQuality1080p = downloadDetails.get(1).getQuality();
                 movieDownloadLink1080p = downloadDetails.get(1).getDownloadLink();
                 moviefileSize1080p = downloadDetails.get(1).getFileSize();
+                setMoviePoster(movieUrlThumbnail);
+
+//                Bundle bundle = new Bundle();
+//                bundle.putString("videoId", movieYoutubeId);
+//                YoutubePlayerFragment fragobj = new YoutubePlayerFragment();
+//                fragobj.setArguments(bundle);
+
+//                YoutubePlayerFragment youtubeFrag = YoutubePlayerFragment.newInstance(movieYoutubeId);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.youtube_frame,youtubeFrag).commit();
+
+
+
+
             }
         });
 
@@ -146,6 +181,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public interface VolleyCallback {
 
         void onSuccess();
+    }
+
+    public void setMoviePoster(String urlThumbnail){
+        ImageView posterHolder = (ImageView) findViewById(R.id.poster_header);
+        Picasso.with(getApplicationContext())
+                .load(urlThumbnail)
+                .fit().centerCrop()
+                .into(posterHolder);
+
     }
 }
 
