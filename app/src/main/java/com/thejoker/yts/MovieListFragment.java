@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -32,15 +33,19 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     private RequestQueue requestQueue;
     private VolleySingleton volleySingleton;
     private Context context;
+    private View mView;
     public ArrayList<MovieList> listMovies = new ArrayList<>();
     private RecyclerView listMoviesRecyclerView;
     private  ListMoviesAdapter listMoviesAdapter;
     private int pageNumber = 1;
     private LinearLayout linearLayout;
+    private ProgressBar Spinner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
+        this.mView = view;
+
 
         listMoviesRecyclerView = (RecyclerView)  view.findViewById(R.id.list_movies);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),3);
@@ -68,6 +73,10 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     }
     public void updateMovieList() {
         RequestQueue mrequestQueue = Volley.newRequestQueue(getActivity());
+        Spinner = (ProgressBar) mView.findViewById(R.id.progress_spin);
+        Spinner.setIndeterminate(true);
+        Spinner.setVisibility(View.VISIBLE);
+
 
 
 
@@ -103,11 +112,14 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
                             exception.printStackTrace();
                         }
                         listMoviesAdapter.setListMovies(listMovies);
+                        Spinner.setVisibility(View.GONE);
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                Spinner.setVisibility(View.GONE);
 
                 Snackbar.make(getView(),"Please Check Your Internet Connection!",Snackbar.LENGTH_INDEFINITE).setAction("Go to Settings",
                         new View.OnClickListener() {
@@ -163,13 +175,7 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Snackbar.make(getView(),"Please Check Your Internet Connection!",Snackbar.LENGTH_INDEFINITE).setAction("Go to Settings",
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startActivityForResult(new Intent(Settings.ACTION_SETTINGS),0);
-                            }
-                        }).show();
+
 
             }
         });
