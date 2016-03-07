@@ -10,17 +10,15 @@
     <LinearLayout
         android:layout_width="@dimen/video_grid_width"
         android:layout_height="@dimen/video_grid_height"
-        android:layout_margin="5dp"
-        >
+        android:layout_margin="5dp">
 
         <ImageView
             android:id="@+id/video_poster"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="1dp"
             android:focusable="true"
-            android:scaleType="fitXY"
-            />
+            android:padding="1dp"
+            android:scaleType="fitXY" />
     </LinearLayout>
 
     <TextView
@@ -29,9 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="1dp"
         android:layout_marginRight="1dp"
-        android:ellipsize="none"
+        android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorPrimaryText"
         android:textSize="@dimen/video_grid_name_text"
         tools:text="Title" />
 
@@ -41,10 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="1dp"
         android:layout_marginRight="1dp"
-        android:textColor="#888888"
+        android:textColor="@color/colorPrimaryText"
         android:textSize="@dimen/video_grid_year_text"
         tools:text="2015" />
-
 
 
 </LinearLayout>
