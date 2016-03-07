@@ -1,13 +1,14 @@
 package com.thejoker.yts;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,13 +17,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -30,11 +33,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private VolleySingleton volleySingleton;
     private RequestQueue mRequestQueue;
     private ArrayList<MovieDetails> detailsMovies = new ArrayList<>();
+    private List<String> detailsMovieGenre = new ArrayList<>();
     private ArrayList<MovieDownloadDetails>downloadDetails = new ArrayList<>();
     private String movieTitle ;
     private String movieSummary ;
     private int movieYear;
-    private long movieRating;
+    private double movieRating;
     private String movieYoutubeId;
     private String movieUrlThumbnail;
     private String movieDownloadLink720p;
@@ -43,12 +47,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private String movieDownloadLink1080p;
     private String movieQuality1080p;
     private String moviefileSize1080p;
-
-    private CoordinatorLayout mCoordinator;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private FloatingActionButton mFab;
+    private int  movieRunTime;
+    private String movieCertificate;
     private Toolbar mToolbar;
-    private CollapsingToolbarLayout collapseBar;
+    private FloatingActionButton mFab;
+    private TextView movieTitleTextView;
+    private TextView movieReleaseDate;
+    private TextView movieGenresText;
+    private TextView movieRuntimeText;
+    private TextView movieCertificationText;
+    private TextView movieRatingText;
+    private LinearLayout layoutDetails;
+    private ExpandableTextView movieSynopsisText;
+    private AppBarLayout mAppBarLayout;
+
 
 
     @Override
@@ -56,10 +68,25 @@ public class MovieDetailsActivity extends AppCompatActivity {
         getLayoutInflater().setFactory(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        mToolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            Window w = getWindow(); // in Activity's onCreate() for instance
+//            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        }
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_movie_details);
         setSupportActionBar(mToolbar);
-        collapseBar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapseBar.setTitle("Here come the Movie Name!");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        movieTitleTextView = (TextView)findViewById(R.id.movie_title);
+        movieReleaseDate = (TextView)findViewById(R.id.movie_release_date);
+        movieGenresText = (TextView)findViewById(R.id.movie_genre);
+        movieRuntimeText = (TextView)findViewById(R.id.movie_runtime);
+        movieCertificationText = (TextView)findViewById(R.id.movie_certification);
+        movieRatingText = (TextView)findViewById(R.id.movie_rating);
+        movieSynopsisText= (ExpandableTextView)findViewById(R.id.expand_text_view);
+        mAppBarLayout = (AppBarLayout)findViewById(R.id.appbarlayout);
+
+
+
 
 
         Intent i = getIntent();
@@ -76,7 +103,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 movieSummary = detailsMovies.get(0).getSummary();
                 movieYear = detailsMovies.get(0).getYear();
                 movieRating = detailsMovies.get(0).getRating();
+                Toast.makeText(getApplicationContext(),Double.toString(movieRating),Toast.LENGTH_LONG).show();
+                double rating =  (movieRating*100.0)/10.0;
 
+                movieRunTime = detailsMovies.get(0).getRunTime();
+                String movieRunTimeString = Integer.toString(movieRunTime);
+                movieCertificate=detailsMovies.get(0).getMpaaRating();
 
 
                 movieQuality720p = downloadDetails.get(0).getQuality();
@@ -86,14 +118,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 movieDownloadLink1080p = downloadDetails.get(1).getDownloadLink();
                 moviefileSize1080p = downloadDetails.get(1).getFileSize();
                 setMoviePoster(movieUrlThumbnail);
+                movieTitleTextView.setText(movieTitle);
+                movieGenresText.setText(detailsMovieGenre.toString().replaceAll("\\[|\\]", ""));
+                movieRuntimeText.setText(movieRunTimeString+" minutes");
+                if(movieCertificate=="R"){
+                    layoutDetails = (LinearLayout)findViewById(R.id.details_area);
+                    layoutDetails.setBackgroundColor(Color.parseColor("#e23131"));
+                }
+                movieCertificationText.setText(movieCertificate);
+                movieRatingText.setText(rating+"%");
+                movieSynopsisText.setText(movieSummary);
 
-//                Bundle bundle = new Bundle();
-//                bundle.putString("videoId", movieYoutubeId);
-//                YoutubePlayerFragment fragobj = new YoutubePlayerFragment();
-//                fragobj.setArguments(bundle);
 
-//                YoutubePlayerFragment youtubeFrag = YoutubePlayerFragment.newInstance(movieYoutubeId);
-//                getSupportFragmentManager().beginTransaction().replace(R.id.youtube_frame,youtubeFrag).commit();
 
 
 
@@ -122,16 +158,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     JSONObject movieData = response.getJSONObject("data");
                     JSONObject movieDetailsObject = movieData.getJSONObject(Keys.EndPointMovieDetails.KEYS_MOVIE);
                     String movieTitle = movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_TITLE_LONG);
-                    long movieRating = movieDetailsObject.getInt(Keys.EndPointMovieDetails.KEYS_RATING);
+                    double movieRating = movieDetailsObject.getInt(Keys.EndPointMovieDetails.KEYS_RATING);
                     String movieSynopsis = movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_DESCRIPTION);
                     String moviePosterUrl = movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_COVER);
                     String movieYoutubeId = movieDetailsObject.getString(Keys.EndPointMovieDetails.KEY_YOUTUBE_ID);
+                    int  movieRunTime=movieDetailsObject.getInt(Keys.EndPointMovieDetails.KEYS_RUNTIME);
+                    String movieCertificate=movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_CERTIFICATE);
                     movieDetails.setTitle(movieTitle);
                     movieDetails.setRating(movieRating);
                     movieDetails.setSummary(movieSynopsis);
                     movieDetails.setUrlThumbnail(moviePosterUrl);
                     movieDetails.setYoutube_id(movieYoutubeId);
+                    movieDetails.setRunTime(movieRunTime);
+                    movieDetails.setMpaaRating(movieCertificate);
+                    JSONArray movieGenre = movieDetailsObject.getJSONArray(Keys.EndPointMovieDetails.KEYS_GENRE);
+
+                    for(int j=0;j<movieGenre.length();j++){
+                        String movieGenres;
+                        movieGenres=movieGenre.optString(j);
+                        detailsMovieGenre.add(movieGenres);
+                    }
                     detailsMovies.add(movieDetails);
+
 
 
 
@@ -184,12 +232,21 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void setMoviePoster(String urlThumbnail){
-        ImageView posterHolder = (ImageView) findViewById(R.id.poster_header);
-        Picasso.with(getApplicationContext())
+        ImageView posterHolder = (ImageView) findViewById(R.id.movie_fanart);
+        ImageView minyPoster = (ImageView)findViewById(R.id.movie_poster);
+        Glide.with(getApplicationContext())
                 .load(urlThumbnail)
-                .fit().centerCrop()
+                .centerCrop()
+                .crossFade()
                 .into(posterHolder);
+        Glide.with(getApplicationContext())
+                .load(urlThumbnail)
+                .crossFade()
+                .fitCenter().centerCrop()
+                .into(minyPoster);
 
     }
+
+
 }
 
