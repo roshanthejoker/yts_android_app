@@ -9,5 +9,6 @@ public class UrlEndPoints {
     public static final String URL_PARAM_ID = "movie_id=";
     public static final String URL_PARAM_PAGE = "page=";
     public static final String URL_PARAM_LIMIT = "limit=";
+    public static final String URL_PARAM_QUERY = "query_term=";
 
 }
