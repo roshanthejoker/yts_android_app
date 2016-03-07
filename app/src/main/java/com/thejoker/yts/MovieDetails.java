@@ -8,11 +8,41 @@ public class MovieDetails {
     private String title ;
     private String Summary ;
     private int year;
-    private long rating;
+    private double rating;
     private String youtube_id;
     private String urlThumbnail;
+    private int runTime;
+    private String mpaaRating;
+
+
+
 
     public MovieDetails(){
+
+    }
+    public MovieDetails(
+            int id ,
+            String title ,
+            String Summary ,
+            int year,
+            double rating,
+            String youtube_id,
+            String urlThumbnail,
+            int runTime,
+            String mpaaRating
+
+
+    )
+    {
+        this.id = id;
+        this.title = title;
+        this.Summary = Summary;
+        this.year = year;
+        this.rating = rating;
+        this.youtube_id = youtube_id;
+        this.urlThumbnail = urlThumbnail;
+        this.runTime = runTime;
+        this.mpaaRating=mpaaRating;
 
     }
 
@@ -22,6 +52,7 @@ public class MovieDetails {
 
         return id;
     }
+
 
     public void setId(int id) {
         this.id = id;
@@ -43,11 +74,11 @@ public class MovieDetails {
         this.youtube_id = youtube_id;
     }
 
-    public long getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(long rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
@@ -75,26 +106,23 @@ public class MovieDetails {
         this.title = title;
     }
 
-    public MovieDetails(
-             int id ,
-            String title ,
-            String Summary ,
-             int year,
-             long rating,
-             String youtube_id,
-             String urlThumbnail
-
-    )
-    {
-        this.id = id;
-        this.title = title;
-        this.Summary = Summary;
-        this.year = year;
-        this.rating = rating;
-        this.youtube_id = youtube_id;
-        this.urlThumbnail = urlThumbnail;
-
+    public int getRunTime() {
+        return runTime;
     }
+
+    public void setRunTime(int runTime) {
+        this.runTime = runTime;
+    }
+
+    public String getMpaaRating() {
+        return mpaaRating;
+    }
+
+    public void setMpaaRating(String mpaaRating) {
+        this.mpaaRating = mpaaRating;
+    }
+
+
     @Override
     public String toString(){
         return "ID "+id+
