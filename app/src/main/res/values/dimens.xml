@@ -1,10 +1,5 @@
 
 <resources>
-<dimen name="activity_horizontal_margin">16dp</dimen>
-<dimen name="activity_vertical_margin">16dp</dimen>
-<dimen name="player_time">55dp</dimen>
-<dimen name="video_rating_size">15dp</dimen>
-<dimen name="poster_radius">3dp</dimen>
 <!-- poster_shadow_radius = poster_radius + padding(1dp) -->
 <dimen name="poster_shadow_radius">4dp</dimen>
 
@@ -15,18 +10,21 @@
 <dimen name="video_grid_spacing">5dp</dimen>
 <dimen name="video_grid_name_text">13sp</dimen>
 <dimen name="video_grid_year_text">11sp</dimen>
-<!-- video -->
-<dimen name="video_actors_text">11sp</dimen>
-<dimen name="video_favorite_size">19dp</dimen>
-<dimen name="video_trailer_size">26dp</dimen>
-<dimen name="video_trailer_text">13sp</dimen>
-<dimen name="video_spinner_height">24dp</dimen>
-<dimen name="video_spinner_text">12sp</dimen>
-<dimen name="video_download_height">36dp</dimen>
-<dimen name="video_download_text">16sp</dimen>
-<!-- movie -->
-<dimen name="movie_title_text">22sp</dimen>
-<dimen name="movie_description_text">12sp</dimen>
-<dimen name="movie_watch_height">48dp</dimen>
-<dimen name="movie_watch_text">22sp</dimen>
+
+    <!--Movie Details-->
+    <dimen name="movie_detail_fanart_height">224dp</dimen>
+    <dimen name="content_details_portrait_thumb_width">100dp</dimen>
+    <dimen name="content_details_portrait_thumb_height">150dp</dimen>
+    <dimen name="content_details_baseline_margin">16dp</dimen>
+    <dimen name="content_details_portrait_thumb_negative_margin">-32dp</dimen>
+    <dimen name="content_details_title_margin_top">-12dp</dimen>
+    <dimen name="content_details_title">28sp</dimen>
+    <dimen name="content_details_small_margin">4dp</dimen>
+    <dimen name="content_details_subheader">18sp</dimen>
+    <dimen name="content_details_very_small_margin">0dp</dimen>
+    <dimen name="content_details_large_margin">48dp</dimen>
+    <dimen name="content_details_area_subheader">12sp</dimen>
+    <dimen name="content_details_area_header">16sp</dimen>
+    <dimen name="content_details_body_text">16sp</dimen>
+    <dimen name="details_padding">16dp</dimen>
     </resources>
