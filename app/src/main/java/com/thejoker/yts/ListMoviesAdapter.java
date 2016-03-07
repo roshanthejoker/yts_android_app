@@ -1,7 +1,6 @@
 package com.thejoker.yts;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 
 public class ListMoviesAdapter extends RecyclerView.Adapter<ListMoviesAdapter.ViewHolderListMovies> {
@@ -78,9 +79,9 @@ public class ListMoviesAdapter extends RecyclerView.Adapter<ListMoviesAdapter.Vi
         holder.movieTitle.setText(currentMovie.getTitle());
         holder.movieYear.setText(Integer.toString(currentMovie.getYear()));
         String url = currentMovie.getUrlThumbnail();
-        Picasso.with(context)
+        Glide.with(context)
                 .load(url)
-                .transform(new BitmapBorderTransformation(2,10, Color.WHITE))
+                .bitmapTransform(new RoundedCornersTransformation(context,10,3))
                 .into(holder.movieThumbnail);
 
 
