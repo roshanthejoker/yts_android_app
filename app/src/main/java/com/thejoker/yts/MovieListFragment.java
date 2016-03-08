@@ -40,11 +40,19 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     private LinearLayout linearLayout;
     private ProgressBar Spinner;
     private SwipeRefreshLayout swipeLayout;
+    private String chooseGenre;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
         this.mView = view;
+        Bundle extras = getArguments();
+        if( extras!=null){
+            chooseGenre = extras.getString("genreQuery");
+        }
+        else{
+
+        }
 
 
         Spinner = (ProgressBar) mView.findViewById(R.id.progress_spin);
@@ -76,7 +84,15 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
 
     }
     public void updateMovieList() {
-
+        String url=getUrl(pageNumber);
+        if(chooseGenre!=null){
+            if(chooseGenre.equals("All")){
+                url = getUrl(pageNumber);
+            }
+            else{
+                url=getUrl(pageNumber,chooseGenre);
+            }
+        }
         volleySingleton = VolleySingleton.getsInstance();
         mRequestQueue = VolleySingleton.getmRequestQueue();
         Spinner.setIndeterminate(true);
@@ -86,7 +102,7 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
 
 
 
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl(pageNumber),
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -142,8 +158,18 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
         volleySingleton = VolleySingleton.getsInstance();
         mRequestQueue = VolleySingleton.getmRequestQueue();
                 pageNumber = pageNumber+1;
+        String url=getUrl(pageNumber);
+        if(chooseGenre!=null){
+            if(chooseGenre.equals("All")){
+                url = getUrl(pageNumber);
+            }
+            else{
+                url=getUrl(pageNumber,chooseGenre);
+            }
+        }
 
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl(pageNumber),
+
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -196,6 +222,13 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
         return UrlEndPoints.URL_MOVIE_LIST+
         UrlEndPoints.URl_CHAR_QUESTION+
         UrlEndPoints.URL_PARAM_PAGE+pageNo;
+    }
+    public static String getUrl(int pageNo,String query){
+        return UrlEndPoints.URL_MOVIE_LIST+
+                UrlEndPoints.URl_CHAR_QUESTION+
+                UrlEndPoints.URL_PARAM_PAGE+pageNo+
+                UrlEndPoints.URl_CHAR_AMPERSAND+
+                UrlEndPoints.URL_PARAM_GENRE+query;
     }
 
 
