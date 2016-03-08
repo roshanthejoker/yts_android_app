@@ -10,5 +10,6 @@ public class UrlEndPoints {
     public static final String URL_PARAM_PAGE = "page=";
     public static final String URL_PARAM_LIMIT = "limit=";
     public static final String URL_PARAM_QUERY = "query_term=";
+    public static final String URL_PARAM_GENRE = "genre=";
 
 }
