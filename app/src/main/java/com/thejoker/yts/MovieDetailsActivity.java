@@ -3,6 +3,7 @@ package com.thejoker.yts;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +26,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+
+import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,7 +72,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getLayoutInflater().setFactory(this);
@@ -90,8 +93,25 @@ public class MovieDetailsActivity extends AppCompatActivity {
         movieRatingText = (TextView)findViewById(R.id.movie_rating);
         movieSynopsisText= (ExpandableTextView)findViewById(R.id.expand_text_view);
         movieDetailsToolbar = (Toolbar)findViewById(R.id.toolbar_movie_details);
+
+        Drawable backDrawable = MaterialDrawableBuilder.with(this)
+                .setIcon(MaterialDrawableBuilder.IconValue.ARROW_LEFT)
+                .setColor(Color.WHITE)
+                .setToActionbarSize()
+                .build();
         setSupportActionBar(movieDetailsToolbar);
+        movieDetailsToolbar.setNavigationIcon(backDrawable);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        movieDetailsToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
 
 
 
@@ -111,7 +131,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 movieSummary = detailsMovies.get(0).getSummary();
                 movieYear = detailsMovies.get(0).getYear();
                 movieRating = detailsMovies.get(0).getRating();
-                Toast.makeText(getApplicationContext(),Double.toString(movieRating),Toast.LENGTH_LONG).show();
                 double rating =  (movieRating*100.0)/10.0;
 
                 movieRunTime = detailsMovies.get(0).getRunTime();
@@ -162,8 +181,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.movie_download_links:
                 showTorrentDownloadLinks();
+                return true;
             case R.id.movie_trailer:
                 showYoutubeTrailer();
+                return true;
         }
        return true;
     }
@@ -180,7 +201,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         for(int i=0;i<downloadDetails.size();i++){
             a[i]=downloadDetails.get(i).getQuality();
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
         builder.setTitle(R.string.dailog_torrent).setItems(a, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
