@@ -14,7 +14,11 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,9 +41,10 @@ public class MainActivity extends AppCompatActivity {
         appBar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(appBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        addGenres();
+
 
         MovieListFragment movieListFragment = new MovieListFragment();
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.movie_list_frame, movieListFragment);
         ft.commit();
@@ -54,8 +59,11 @@ public class MainActivity extends AppCompatActivity {
         EditText txtSearch = (EditText)mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         txtSearch.setHint(R.string.search_hint);
         txtSearch.setHintTextColor(Color.GRAY);
-        txtSearch.setTextColor(ContextCompat.getColor(this,R.color.colorPrimaryText));
+        txtSearch.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryText));
 
+        mSpinner.setSelection(0, true);
+        View v = mSpinner.getSelectedView();
+        ((TextView)v).setTextColor(Color.WHITE);
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -67,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 MovieSearchFragment movieSearchFragment = new MovieSearchFragment();
                 movieSearchFragment.setArguments(bundle);
                 ft.replace(R.id.movie_list_frame, movieSearchFragment);
-                ft.addToBackStack("searchFragment");
+                ft.addToBackStack(null);
                 ft.commit();
                 return true;
             }
@@ -111,6 +119,35 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show();
         }
 
+
+    }
+    public void addGenres(){
+        mSpinner = (AppCompatSpinner)findViewById(R.id.movie_sort_spinner);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.Spinner_Content,
+                R.layout.support_simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = adapter.getItem(position).toString();
+                ((TextView) view).setTextColor(Color.WHITE);
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction ft = manager.beginTransaction();
+                Bundle bundle = new Bundle();
+                bundle.putString("genreQuery", item);
+                MovieListFragment movieListFragment = new MovieListFragment();
+                movieListFragment.setArguments(bundle);
+                ft.replace(R.id.movie_list_frame, movieListFragment);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 }
