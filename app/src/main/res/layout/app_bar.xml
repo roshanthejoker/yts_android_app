@@ -7,8 +7,11 @@
     android:background="@color/colorPrimary"
     >
     <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/movie_sort_spinner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbarSize="23sp"
+        >
 
     </android.support.v7.widget.AppCompatSpinner>
 </android.support.v7.widget.Toolbar>
