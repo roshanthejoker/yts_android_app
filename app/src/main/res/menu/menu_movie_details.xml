@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<item
+    android:id="@+id/movie_download_links"
+    android:icon="@drawable/ic_download"
+    app:showAsAction="always"
+    android:background="?attr/selectableItemBackground"
+    android:title="@string/Download"
+    >
+</item>
+    <item
+        android:id="@+id/movie_trailer"
+        android:icon="@drawable/ic_movie"
+        app:showAsAction="always"
+        android:background="?attr/selectableItemBackground"
+        android:title="@string/Trailer"
+        >
+    </item>
+    <item
+        android:id="@+id/movie_share"
+        android:icon="@drawable/ic_share"
+        app:showAsAction="always"
+        android:background="?attr/selectableItemBackground"
+        android:title="@string/Share"
+        >
+    </item>
+</menu>
