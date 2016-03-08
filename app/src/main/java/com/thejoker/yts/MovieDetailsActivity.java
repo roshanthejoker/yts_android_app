@@ -1,12 +1,17 @@
 package com.thejoker.yts;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -59,7 +64,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView movieRatingText;
     private LinearLayout layoutDetails;
     private ExpandableTextView movieSynopsisText;
-    private AppBarLayout mAppBarLayout;
+    private Toolbar movieDetailsToolbar;
+
 
 
 
@@ -83,7 +89,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         movieCertificationText = (TextView)findViewById(R.id.movie_certification);
         movieRatingText = (TextView)findViewById(R.id.movie_rating);
         movieSynopsisText= (ExpandableTextView)findViewById(R.id.expand_text_view);
-        mAppBarLayout = (AppBarLayout)findViewById(R.id.appbarlayout);
+        movieDetailsToolbar = (Toolbar)findViewById(R.id.toolbar_movie_details);
+        setSupportActionBar(movieDetailsToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
 
@@ -138,6 +146,52 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_movie_details,menu);
+        return true;
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.movie_download_links:
+                showTorrentDownloadLinks();
+            case R.id.movie_trailer:
+                showYoutubeTrailer();
+        }
+       return true;
+    }
+
+    public void showYoutubeTrailer(){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + movieYoutubeId));
+        startActivity(intent);
+    }
+
+
+
+    private void showTorrentDownloadLinks() {
+        String[] a = new String[downloadDetails.size()];
+        for(int i=0;i<downloadDetails.size();i++){
+            a[i]=downloadDetails.get(i).getQuality();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dailog_torrent).setItems(a, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String url = downloadDetails.get(which).getDownloadLink();
+                Intent torrentIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(url));
+                startActivity(torrentIntent);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
