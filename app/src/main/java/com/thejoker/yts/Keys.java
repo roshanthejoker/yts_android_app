@@ -15,6 +15,7 @@ public interface Keys {
         String KEYS_TORRENTS = "torrents";
         String KEYS_RUNTIME="runtime";
         String KEYS_CERTIFICATE="mpa_rating";
+        String KEYS_CAST="cast";
     }
     interface EndPointMovieList{
         String KEYS_MOVIES = "movies";
