@@ -1,14 +1,17 @@
 package com.thejoker.yts;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,29 +40,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MovieDetailsActivity extends AppCompatActivity {
-    TextView movieIdText;
+public class MovieDetailsActivity extends AppCompatActivity implements MovieCastAdapter.ClickListener {
     private VolleySingleton volleySingleton;
     private RequestQueue mRequestQueue;
     private ArrayList<MovieDetails> detailsMovies = new ArrayList<>();
     private List<String> detailsMovieGenre = new ArrayList<>();
     private ArrayList<MovieDownloadDetails>downloadDetails = new ArrayList<>();
+    private ArrayList<MovieCastDetails>movieCast = new ArrayList<>();
     private String movieTitle ;
     private String movieSummary ;
     private int movieYear;
     private double movieRating;
     private String movieYoutubeId;
     private String movieUrlThumbnail;
-    private String movieDownloadLink720p;
-    private String movieQuality720p;
-    private String moviefileSize720p;
-    private String movieDownloadLink1080p;
-    private String movieQuality1080p;
-    private String moviefileSize1080p;
     private int  movieRunTime;
     private String movieCertificate;
-    private Toolbar mToolbar;
-    private FloatingActionButton mFab;
     private TextView movieTitleTextView;
     private TextView movieReleaseDate;
     private TextView movieGenresText;
@@ -69,6 +64,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private LinearLayout layoutDetails;
     private ExpandableTextView movieSynopsisText;
     private Toolbar movieDetailsToolbar;
+    private RecyclerView movieCastRecyclerview;
+    private MovieCastAdapter movieCastAdapter;
+    private String imdbId;
 
 
 
@@ -78,13 +76,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            Window w = getWindow(); // in Activity's onCreate() for instance
 //            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 //        }
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_movie_details);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         movieTitleTextView = (TextView)findViewById(R.id.movie_title);
         movieReleaseDate = (TextView)findViewById(R.id.movie_release_date);
         movieGenresText = (TextView)findViewById(R.id.movie_genre);
@@ -101,21 +97,24 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .build();
         setSupportActionBar(movieDetailsToolbar);
         movieDetailsToolbar.setNavigationIcon(backDrawable);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        movieCastRecyclerview = (RecyclerView)findViewById(R.id.cast_recyclerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
+        movieCastRecyclerview.setLayoutManager(linearLayoutManager);
+        movieCastAdapter = new MovieCastAdapter(getContext());
+        movieCastAdapter.setClickListener(this);
+        movieCastRecyclerview.setAdapter(movieCastAdapter);
+
         movieDetailsToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
-
-
-
-
-
 
         Intent i = getIntent();
         String movieIdString = i.getExtras().getString("movieId");
@@ -127,47 +126,37 @@ public class MovieDetailsActivity extends AppCompatActivity {
             public void onSuccess() {
                 movieYoutubeId = detailsMovies.get(0).getYoutube_id();
                 movieTitle = detailsMovies.get(0).getTitle();
-                movieUrlThumbnail=detailsMovies.get(0).getUrlThumbnail();
+                movieUrlThumbnail = detailsMovies.get(0).getUrlThumbnail();
                 movieSummary = detailsMovies.get(0).getSummary();
                 movieYear = detailsMovies.get(0).getYear();
                 movieRating = detailsMovies.get(0).getRating();
-                double rating =  (movieRating*100.0)/10.0;
+                double rating = (movieRating * 100.0) / 10.0;
 
                 movieRunTime = detailsMovies.get(0).getRunTime();
                 String movieRunTimeString = Integer.toString(movieRunTime);
-                movieCertificate=detailsMovies.get(0).getMpaaRating();
+                movieCertificate = detailsMovies.get(0).getMpaaRating();
 
 
-                movieQuality720p = downloadDetails.get(0).getQuality();
-                movieDownloadLink720p = downloadDetails.get(0).getDownloadLink();
-                moviefileSize720p = downloadDetails.get(0).getFileSize();
-                movieQuality1080p = downloadDetails.get(1).getQuality();
-                movieDownloadLink1080p = downloadDetails.get(1).getDownloadLink();
-                moviefileSize1080p = downloadDetails.get(1).getFileSize();
                 setMoviePoster(movieUrlThumbnail);
                 movieTitleTextView.setText(movieTitle);
                 movieGenresText.setText(detailsMovieGenre.toString().replaceAll("\\[|\\]", ""));
-                movieRuntimeText.setText(movieRunTimeString+" minutes");
-                if(movieCertificate=="R"){
-                    layoutDetails = (LinearLayout)findViewById(R.id.details_area);
+                movieRuntimeText.setText(movieRunTimeString + " minutes");
+                if (movieCertificate.equals("R")) {
+                    layoutDetails = (LinearLayout) findViewById(R.id.details_area);
                     layoutDetails.setBackgroundColor(Color.parseColor("#e23131"));
                 }
                 movieCertificationText.setText(movieCertificate);
-                movieRatingText.setText(rating+"%");
+                movieRatingText.setText(rating + "%");
                 movieSynopsisText.setText(movieSummary);
 
-
-
-
-
-
             }
+
         });
-
-
     }
-
-
+    public Context getContext()
+    {
+        return this;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -175,6 +164,32 @@ public class MovieDetailsActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_movie_details,menu);
         return true;
 
+    }
+    public String getImdbUrl(String imdbId){
+        return "http://m.imdb.com/name/nm"+imdbId+"/";
+    }
+    public void launchWebview(String imdbId){
+        String packageName = "com.android.chrome";
+        String url = getImdbUrl(imdbId);
+        CustomTabsIntent.Builder customTabsIntent = new CustomTabsIntent.Builder();
+        customTabsIntent.setToolbarColor(Color.parseColor("#14e715"));
+        customTabsIntent.setShowTitle(true);
+        if(chromeInstalled()){
+            customTabsIntent.build().intent.setPackage("com.android.com");
+        }
+        customTabsIntent.build().launchUrl(MovieDetailsActivity.this, Uri.parse(url));
+    }
+
+    public boolean chromeInstalled(){
+        try{
+            getPackageManager().getPackageInfo("co.android.chrome",0);
+            return true;
+
+        }
+        catch(Exception e){
+            return false;
+
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -191,6 +206,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     public void showYoutubeTrailer(){
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + movieYoutubeId));
+        intent.putExtra("force_fullscreen",true);
         startActivity(intent);
     }
 
@@ -218,8 +234,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
 
     public void  parseMovieDetails(int id,final VolleyCallback callback){
-
-
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl(id),new Response.Listener<JSONObject>() {
             @Override
@@ -256,6 +270,22 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                     detailsMovies.add(movieDetails);
 
+                    JSONArray movieCastArray = movieDetailsObject.getJSONArray(Keys.EndPointMovieDetails.KEYS_CAST);
+                    for(int j=0;j<movieCastArray.length();j++){
+                        MovieCastDetails movieCastDetails = new MovieCastDetails();
+                        JSONObject castInfo = movieCastArray.getJSONObject(j);
+                        String actorName = castInfo.getString("name");
+                        String characterName = castInfo.getString("character_name");
+                        String urlImage = castInfo.optString("url_small_image");
+                        String imdbId = castInfo.getString("imdb_code");
+                        movieCastDetails.setName(actorName);
+                        movieCastDetails.setCharacterName(characterName);
+                        movieCastDetails.setImageUrl(urlImage);
+                        movieCastDetails.setImdbId(imdbId);
+                        movieCast.add(movieCastDetails);
+                    }
+                    movieCastAdapter.setCastMovies(movieCast);
+                    movieCastAdapter.notifyDataSetChanged();
 
 
 
@@ -272,6 +302,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         movieDownloadDetails.setFileSize(fileSize);
                         downloadDetails.add(movieDownloadDetails);
                     }
+
+
                     callback.onSuccess();
 
 
@@ -300,8 +332,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public String getUrl(int movieId){
         return UrlEndPoints.URL_MOVIE_DETAILS+
                 UrlEndPoints.URl_CHAR_QUESTION+
-                UrlEndPoints.URL_PARAM_ID+movieId;
+                UrlEndPoints.URL_PARAM_ID+movieId+
+                UrlEndPoints.URl_CHAR_AMPERSAND+
+                UrlEndPoints.URL_PARAAM_ENABLE_CAST;
     }
+
+    @Override
+    public void itemClicked(View view, int position) {
+
+        imdbId = movieCast.get(position).getImdbId();
+        launchWebview(imdbId);
+    }
+
     public interface VolleyCallback {
 
         void onSuccess();
