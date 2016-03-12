@@ -39,6 +39,12 @@ public class MovieSearchFragment extends Fragment implements  ListMoviesAdapter.
     private SwipeRefreshLayout swipeLayout;
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mView = getView().getRootView();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
         this.mView = view;
@@ -134,7 +140,7 @@ public class MovieSearchFragment extends Fragment implements  ListMoviesAdapter.
 
                 Spinner.setVisibility(View.GONE);
 
-                Snackbar.make(getView(), "Please Check Your Internet Connection!", Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(mView, "Please Check Your Internet Connection!", Snackbar.LENGTH_INDEFINITE).show();
             }
         });
         mRequestQueue.add(jsonObjectRequest);
