@@ -17,13 +17,11 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ListMoviesAdapter extends RecyclerView.Adapter<ListMoviesAdapter.ViewHolderListMovies> {
     private ArrayList<MovieList> listMovies = new ArrayList<>();
-    private VolleySingleton volleySingleton;
     private  Context context;
     private LayoutInflater layoutInflater;
     private  Clicklistener clickListener;
     public ListMoviesAdapter(Context context){
         layoutInflater=LayoutInflater.from(context);
-        volleySingleton=VolleySingleton.getsInstance();
        this.context=context;
 
     }
@@ -39,7 +37,7 @@ public class ListMoviesAdapter extends RecyclerView.Adapter<ListMoviesAdapter.Vi
 
 
 
-   public   class ViewHolderListMovies extends RecyclerView.ViewHolder implements View.OnClickListener {
+   public  class ViewHolderListMovies extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView movieThumbnail;
         private TextView movieTitle;
