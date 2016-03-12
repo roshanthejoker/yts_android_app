@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -41,21 +42,28 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     private ProgressBar Spinner;
     private SwipeRefreshLayout swipeLayout;
     private String chooseGenre;
+    private Snackbar snack;
+    private RelativeLayout mRelativeLayout;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mView = getView().getRootView();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
-        this.mView = view;
+        mRelativeLayout = (RelativeLayout)view.findViewById(R.id.relativelayout);
         Bundle extras = getArguments();
         if( extras!=null){
             chooseGenre = extras.getString("genreQuery");
         }
-        else{
-
-        }
 
 
-        Spinner = (ProgressBar) mView.findViewById(R.id.progress_spin);
+
+        Spinner = (ProgressBar) view.findViewById(R.id.progress_spin);
+        updateMovieList();
         listMoviesRecyclerView = (RecyclerView)  view.findViewById(R.id.list_movies);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),3);
         listMoviesRecyclerView.setLayoutManager(gridLayoutManager);
@@ -71,14 +79,11 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
                 updateNextMovieList();
             }
         });
-        updateMovieList();
+
 
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.colorPrimary);
-        if(swipeLayout.isRefreshing()){
-            Spinner.setVisibility(View.INVISIBLE);
-        }
         return view;
 
 
@@ -144,10 +149,8 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
             @Override
             public void onErrorResponse(VolleyError error) {
                 swipeLayout.setRefreshing(false);
-
                 Spinner.setVisibility(View.GONE);
 
-                Snackbar.make(mView,"Please Check Your Internet Connection!",Snackbar.LENGTH_INDEFINITE).show();
             }
         });
         mRequestQueue.add(jsonObjectRequest);
