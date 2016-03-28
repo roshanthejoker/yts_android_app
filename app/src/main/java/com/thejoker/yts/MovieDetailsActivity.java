@@ -3,11 +3,19 @@ package com.thejoker.yts;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.hardware.SensorManager;
+import android.media.Image;
 import android.net.Uri;
+
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +37,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import net.steamcrafted.materialiconlib.MaterialDrawableBuilder;
@@ -38,6 +49,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import io.realm.annotations.PrimaryKey;
 
 
 public class MovieDetailsActivity extends AppCompatActivity implements MovieCastAdapter.ClickListener {
@@ -67,6 +83,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
     private RecyclerView movieCastRecyclerview;
     private MovieCastAdapter movieCastAdapter;
     private String imdbId;
+    private ProgressBar mProgressBar;
+    private LinearLayout mContentLayout;
+    private AppBarLayout mAppBarLayout;
+    private CoordinatorLayout mCoordinatorLayout;
+    public Realm mRealm;
+    private boolean fav;
+    private FavoriteListAdapter mAdapter;
+
 
 
 
@@ -77,29 +101,18 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
         setContentView(R.layout.activity_movie_details);
 
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            Window w = getWindow(); // in Activity's onCreate() for instance
-//            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//        }
-        movieTitleTextView = (TextView)findViewById(R.id.movie_title);
-        movieReleaseDate = (TextView)findViewById(R.id.movie_release_date);
-        movieGenresText = (TextView)findViewById(R.id.movie_genre);
-        movieRuntimeText = (TextView)findViewById(R.id.movie_runtime);
-        movieCertificationText = (TextView)findViewById(R.id.movie_certification);
-        movieRatingText = (TextView)findViewById(R.id.movie_rating);
-        movieSynopsisText= (ExpandableTextView)findViewById(R.id.expand_text_view);
-        movieDetailsToolbar = (Toolbar)findViewById(R.id.toolbar_movie_details);
+        mRealm = Realm.getDefaultInstance();
+        mCoordinatorLayout = (CoordinatorLayout)findViewById(R.id.main_content);
+        mContentLayout = (LinearLayout)findViewById(R.id.root_view_detail_activity);
+        mAppBarLayout = (AppBarLayout)findViewById(R.id.appbarlayout);
+        mAppBarLayout.setExpanded(false);
 
-        Drawable backDrawable = MaterialDrawableBuilder.with(this)
-                .setIcon(MaterialDrawableBuilder.IconValue.ARROW_LEFT)
-                .setColor(Color.WHITE)
-                .setToActionbarSize()
-                .build();
-        setSupportActionBar(movieDetailsToolbar);
-        movieDetailsToolbar.setNavigationIcon(backDrawable);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+
+        mProgressBar = (ProgressBar)findViewById(R.id.progress_spin2);
+        mProgressBar.setIndeterminate(true);
+        mProgressBar.setVisibility(View.VISIBLE);
 
         movieCastRecyclerview = (RecyclerView)findViewById(R.id.cast_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
@@ -109,21 +122,65 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
         movieCastAdapter.setClickListener(this);
         movieCastRecyclerview.setAdapter(movieCastAdapter);
 
-        movieDetailsToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            Window w = getWindow(); // in Activity's onCreate() for instance
+//            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+//        }
+
 
         Intent i = getIntent();
         String movieIdString = i.getExtras().getString("movieId");
-        int movieId = Integer.parseInt(movieIdString);
+        final int movieId = Integer.parseInt(movieIdString);
         volleySingleton = VolleySingleton.getsInstance();
         mRequestQueue = VolleySingleton.getmRequestQueue();
+
         parseMovieDetails(movieId,new VolleyCallback() {
             @Override
             public void onSuccess() {
+
+
+                movieTitleTextView = (TextView)findViewById(R.id.movie_title);
+                movieGenresText = (TextView)findViewById(R.id.movie_genre);
+                movieRuntimeText = (TextView)findViewById(R.id.movie_runtime);
+                movieCertificationText = (TextView)findViewById(R.id.movie_certification);
+                movieRatingText = (TextView)findViewById(R.id.movie_rating);
+                movieSynopsisText= (ExpandableTextView)findViewById(R.id.expand_text_view);
+                movieDetailsToolbar = (Toolbar)findViewById(R.id.toolbar_movie_details);
+
+                Drawable backDrawable = MaterialDrawableBuilder.with(getContext())
+                        .setIcon(MaterialDrawableBuilder.IconValue.ARROW_LEFT)
+                        .setColor(Color.WHITE)
+                        .setToActionbarSize()
+                        .build();
+                setSupportActionBar(movieDetailsToolbar);
+                movieDetailsToolbar.setNavigationIcon(backDrawable);
+                getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                if(checkIfExists(movieId))
+                {
+                    fav=false;
+                }
+                else{
+                    fav=true;
+                }
+                final MaterialFavoriteButton mFavoriteButton = new MaterialFavoriteButton.Builder(MovieDetailsActivity.this)
+                        .favorite(fav)
+                        .color(MaterialFavoriteButton.STYLE_WHITE)
+                        .type(MaterialFavoriteButton.STYLE_HEART)
+                        .rotationDuration(300)
+                        .create();
+                movieDetailsToolbar.addView(mFavoriteButton,0);
+
+
+
+                movieDetailsToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
                 movieYoutubeId = detailsMovies.get(0).getYoutube_id();
                 movieTitle = detailsMovies.get(0).getTitle();
                 movieUrlThumbnail = detailsMovies.get(0).getUrlThumbnail();
@@ -135,6 +192,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
                 movieRunTime = detailsMovies.get(0).getRunTime();
                 String movieRunTimeString = Integer.toString(movieRunTime);
                 movieCertificate = detailsMovies.get(0).getMpaaRating();
+                mAppBarLayout.setExpanded(true);
 
 
                 setMoviePoster(movieUrlThumbnail);
@@ -148,10 +206,72 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
                 movieCertificationText.setText(movieCertificate);
                 movieRatingText.setText(rating + "%");
                 movieSynopsisText.setText(movieSummary);
+                mContentLayout.setVisibility(View.VISIBLE);
+
+                mProgressBar.setVisibility(View.GONE);
+
+
+                mFavoriteButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
+                    @Override
+                    public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+                        if(!favorite) {
+                           RealmQuery<FavoriteListRealm> query = mRealm.where(FavoriteListRealm.class);
+                                    query.equalTo("realmMovieId",movieId);
+                            RealmResults<FavoriteListRealm> result = query.findAll();
+                            mRealm.beginTransaction();
+                            result.removeLast();
+                            mRealm.commitTransaction();
+
+
+
+
+
+
+
+                        }
+                        if(favorite){
+
+                            boolean b = checkIfExists(movieId);
+                            if(b)
+                            {
+                                mRealm.beginTransaction();
+                                FavoriteListRealm favorites = mRealm.createObject(FavoriteListRealm.class);
+                                favorites.setRealmMovieId(movieId);
+                                favorites.setRealmMovieTitle(movieTitle);
+                                favorites.setRealmThumbnailUrl(movieUrlThumbnail);
+                                favorites.setRealmMovieYear(movieYear);
+                                mRealm.copyToRealmOrUpdate(favorites);
+                                mRealm.commitTransaction();
+
+
+                            }
+
+
+
+
+
+
+                        }
+
+                    }
+                });
 
             }
 
         });
+    }
+
+    public boolean checkIfExists(int id){
+        RealmQuery<FavoriteListRealm> query = mRealm.where(FavoriteListRealm.class);
+          RealmQuery<FavoriteListRealm> realmQuery = query.equalTo("realmMovieId",id);
+        RealmResults<FavoriteListRealm> results = realmQuery.findAll();
+
+        if(results.isEmpty()){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     public Context getContext()
     {
@@ -165,6 +285,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
         return true;
 
     }
+
+
+
     public String getImdbUrl(String imdbId){
         return "http://m.imdb.com/name/nm"+imdbId+"/";
     }
@@ -223,8 +346,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String url = downloadDetails.get(which).getDownloadLink();
-                Intent torrentIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(url));
+                Intent torrentIntent = new Intent(Intent.ACTION_VIEW);
+                torrentIntent.addCategory(Intent.CATEGORY_DEFAULT);
+                torrentIntent.setType("application/x-bittorent");
+                torrentIntent.setData(Uri.parse(url));
                 startActivity(torrentIntent);
             }
         });
@@ -248,6 +373,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
                     JSONObject movieData = response.getJSONObject("data");
                     JSONObject movieDetailsObject = movieData.getJSONObject(Keys.EndPointMovieDetails.KEYS_MOVIE);
                     String movieTitle = movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_TITLE_LONG);
+                    int movieYear = movieDetailsObject.getInt(Keys.EndPointMovieDetails.KEYS_YEAR);
                     double movieRating = movieDetailsObject.getInt(Keys.EndPointMovieDetails.KEYS_RATING);
                     String movieSynopsis = movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_DESCRIPTION);
                     String moviePosterUrl = movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_COVER);
@@ -255,6 +381,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
                     int  movieRunTime=movieDetailsObject.getInt(Keys.EndPointMovieDetails.KEYS_RUNTIME);
                     String movieCertificate=movieDetailsObject.getString(Keys.EndPointMovieDetails.KEYS_CERTIFICATE);
                     movieDetails.setTitle(movieTitle);
+                    movieDetails.setYear(movieYear);
                     movieDetails.setRating(movieRating);
                     movieDetails.setSummary(movieSynopsis);
                     movieDetails.setUrlThumbnail(moviePosterUrl);
@@ -334,7 +461,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
                 UrlEndPoints.URl_CHAR_QUESTION+
                 UrlEndPoints.URL_PARAM_ID+movieId+
                 UrlEndPoints.URl_CHAR_AMPERSAND+
-                UrlEndPoints.URL_PARAAM_ENABLE_CAST;
+                UrlEndPoints.URL_PARAAM_ENABLE_CAST+
+                UrlEndPoints.URl_CHAR_AMPERSAND+
+                UrlEndPoints.URL_PARAM_SCREENSHOTS;
     }
 
     @Override
@@ -350,20 +479,29 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieCast
     }
 
     public void setMoviePoster(String urlThumbnail){
-        ImageView posterHolder = (ImageView) findViewById(R.id.movie_fanart);
+        ImageView moviePoster = (ImageView)findViewById(R.id.movie_fanart);
         ImageView minyPoster = (ImageView)findViewById(R.id.movie_poster);
         Glide.with(getApplicationContext())
                 .load(urlThumbnail)
                 .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .crossFade()
-                .into(posterHolder);
+                .into(moviePoster);
         Glide.with(getApplicationContext())
                 .load(urlThumbnail)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .crossFade()
                 .fitCenter().centerCrop()
                 .into(minyPoster);
 
-    }
+
+
+
+
+
+
+                }
+
 
 
 }

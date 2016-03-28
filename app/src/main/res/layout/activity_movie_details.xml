@@ -1,9 +1,11 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:parallax="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+
+    >
 
 
     <android.support.design.widget.AppBarLayout
@@ -46,6 +48,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,12 +57,14 @@
 
         <include layout="@layout/content_movie_details"/>
 
+
     </android.support.v4.widget.NestedScrollView>
-    <WebView
 
-        android:id="@+id/webView"
+
+    <ProgressBar
+        android:id="@+id/progress_spin2"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </WebView>
-
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 </android.support.design.widget.CoordinatorLayout>

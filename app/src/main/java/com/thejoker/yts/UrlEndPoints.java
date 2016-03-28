@@ -11,6 +11,9 @@ public class UrlEndPoints {
     public static final String URL_PARAM_LIMIT = "limit=";
     public static final String URL_PARAM_QUERY = "query_term=";
     public static final String URL_PARAM_GENRE = "genre=";
+    public static final String URL_PARAM_SORT = "sort_by=";
+    public static final String URL_PARAM_SORT_RATING = "minimum_rating=";
     public static final String URL_PARAAM_ENABLE_CAST = "with_cast=true";
+    public static final String URL_PARAM_SCREENSHOTS = "with_images=true";
 
 }

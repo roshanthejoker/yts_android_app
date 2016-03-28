@@ -15,3 +15,10 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn com.mcxiaoke.volley.**
+-dontwarn com.android.support.**
+-dontwarn net.steamcrafted.**
+-dontwarn com.android.support.design.**
+-dontwarn com.ms-square.**
+-dontwarn jp.wasabeef.glide-transformations.**
+-dontwarn com.cjj.materialrefreshlayout.**

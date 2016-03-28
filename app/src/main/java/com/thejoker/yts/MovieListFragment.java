@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Clicklistener,SwipeRefreshLayout.OnRefreshListener{
@@ -39,11 +39,12 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     private  ListMoviesAdapter listMoviesAdapter;
     private int pageNumber = 1;
     private LinearLayout linearLayout;
-    private ProgressBar Spinner;
+    private ProgressBar mSpinner;
     private SwipeRefreshLayout swipeLayout;
     private String chooseGenre;
     private Snackbar snack;
-    private RelativeLayout mRelativeLayout;
+
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -54,15 +55,15 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
-        mRelativeLayout = (RelativeLayout)view.findViewById(R.id.relativelayout);
         Bundle extras = getArguments();
         if( extras!=null){
             chooseGenre = extras.getString("genreQuery");
         }
+        mSpinner = (ProgressBar) view.findViewById(R.id.progress_spin);
 
 
 
-        Spinner = (ProgressBar) view.findViewById(R.id.progress_spin);
+
         updateMovieList();
         listMoviesRecyclerView = (RecyclerView)  view.findViewById(R.id.list_movies);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),3);
@@ -96,13 +97,15 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
             }
             else{
                 url=getUrl(pageNumber,chooseGenre);
+
+
             }
         }
         volleySingleton = VolleySingleton.getsInstance();
         mRequestQueue = VolleySingleton.getmRequestQueue();
-        Spinner.setIndeterminate(true);
+        mSpinner.setIndeterminate(true);
 
-            Spinner.setVisibility(View.VISIBLE);
+            mSpinner.setVisibility(View.VISIBLE);
 
 
 
@@ -142,14 +145,14 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
                         if(swipeLayout.isRefreshing()){
                             swipeLayout.setRefreshing(false);
                         }
-                        Spinner.setVisibility(View.GONE);
+                        mSpinner.setVisibility(View.GONE);
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 swipeLayout.setRefreshing(false);
-                Spinner.setVisibility(View.GONE);
+                mSpinner.setVisibility(View.GONE);
 
             }
         });
@@ -168,6 +171,7 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
             }
             else{
                 url=getUrl(pageNumber,chooseGenre);
+
             }
         }
 
@@ -251,4 +255,9 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     public void onRefresh() {
         updateMovieList();
     }
-}
+
+
+
+
+
+    }

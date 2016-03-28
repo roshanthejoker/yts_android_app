@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:scrollbarSize="23sp"
         >
-
     </android.support.v7.widget.AppCompatSpinner>
+
+    
 </android.support.v7.widget.Toolbar>

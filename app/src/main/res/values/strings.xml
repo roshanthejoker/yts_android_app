@@ -1,4 +1,9 @@
 <resources>
+    <string name="yts_tagline">Welcome to the official YTS website.
+        Here you will be able to browse and download
+        YIFY movies in excellent 720p, 1080p and 3D quality,
+        all at the smallest file size.
+        Only here: YTS Movies Torrents. </string>
     <string name="app_name">YTS</string>
     <string name="retry_string">Oops! Connection Error</string>
     <string name="home">Home</string>
@@ -10,6 +15,8 @@
     <string name="Trailer">Trailer</string>
     <string name="Share">Share</string>
     <string name="dailog_torrent">Choose a Quality</string>
+    <string name="signed_in_fmt">Successfulyy Signed In</string>
+    <string name="Favorites">Favorites</string>
 
     <string-array name="Spinner_Content">
         <item>All</item>

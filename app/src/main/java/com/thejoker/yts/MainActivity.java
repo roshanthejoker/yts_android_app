@@ -1,5 +1,6 @@
 package com.thejoker.yts;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -21,6 +22,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+
 public class MainActivity extends AppCompatActivity {
     private Toolbar appBar;
     private NavigationView mNavigationView;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int TIME_INTERVAL = 2000;
     private long mBackPressed;
     private AppCompatSpinner mSpinner;
+
 
 
 
@@ -44,12 +48,26 @@ public class MainActivity extends AppCompatActivity {
         addGenres();
 
 
+
+
+
+
         MovieListFragment movieListFragment = new MovieListFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.movie_list_frame, movieListFragment);
         ft.commit();
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.favorites:
+                Intent i = new Intent(this,FavoriteActivity.class);
+                startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -60,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         txtSearch.setHint(R.string.search_hint);
         txtSearch.setHintTextColor(Color.GRAY);
         txtSearch.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryText));
+
+
 
         mSpinner.setSelection(0, true);
         View v = mSpinner.getSelectedView();

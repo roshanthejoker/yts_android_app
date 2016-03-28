@@ -1,7 +1,9 @@
 package com.thejoker.yts;
 
 
-public class MovieList {
+
+
+public class MovieList  {
     private int id;
     private String title;
     private int year;

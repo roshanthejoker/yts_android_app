@@ -5,6 +5,37 @@
     android:layout_height="match_parent"
     android:background="#1d1d1d"
     android:clipToPadding="false">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/sorting_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--style="@style/AppCompatAlertDialogStyle"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_marginTop="4dp"-->
+        <!--android:layout_marginBottom="4dp"-->
+        <!--&gt;-->
+        <!--<android.support.v7.widget.AppCompatSpinner-->
+            <!--android:id="@+id/movie_sortby_rating_spinner"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--style="@style/AppCompatAlertDialogStyle"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:scrollbarSize="23sp"-->
+            <!--&gt;-->
+        <!--</android.support.v7.widget.AppCompatSpinner>-->
+
+        <!--<android.support.v7.widget.AppCompatSpinner-->
+            <!--android:id="@+id/movie_sortby_order_spinner"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:scrollbarSize="23sp"-->
+            <!--&gt;-->
+        <!--</android.support.v7.widget.AppCompatSpinner>-->
+
+
+
+    <!--</LinearLayout>-->
     <ProgressBar
         android:id="@+id/progress_spin"
         style="?android:attr/progressBarStyleLarge"

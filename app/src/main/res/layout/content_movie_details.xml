@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:id="@+id/root_view_detail_activity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#1d1d1d">
+    android:background="#1d1d1d"
+    android:visibility="invisible">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -46,15 +49,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/content_details_title"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/movie_release_date"
-                android:layout_marginTop="@dimen/content_details_small_margin"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/content_details_subheader" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -187,7 +182,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/cast_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_id": "yts-android-app",
+    "project_number": "253951027863",
+    "name": "YTS Android App"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253951027863:android:838ee40c5a3d785a",
+        "client_id": "android:com.thejoker.yts",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.thejoker.yts",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "253951027863-iimo9s3kva4r1t4kk77nn0sdl8pfkhs6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thejoker.yts",
+            "certificate_hash": "78FF98A0022CA58A1C22FD32B83F89C18A60D3C6"
+          }
+        },
+        {
+          "client_id": "253951027863-rsp91v15a6nst9e7utrofck769idfvj0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}
