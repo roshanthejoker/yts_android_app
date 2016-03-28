@@ -2,6 +2,7 @@ package com.thejoker.yts;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,20 +39,22 @@ public class MovieSearchFragment extends Fragment implements  ListMoviesAdapter.
     private ProgressBar Spinner;
     private String searchQuery;
     private SwipeRefreshLayout swipeLayout;
+    private CoordinatorLayout mCoordinatorLayout;
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mView = getView().getRootView();
-    }
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        mView = getView().getRootView();
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
-        this.mView = view;
 
         Bundle extras = getArguments();
         searchQuery = extras.getString("searchQuery");
+        mCoordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayoutList);
+        Spinner = (ProgressBar) view.findViewById(R.id.progress_spin);
 
         searchMoviesRecyclerView = (RecyclerView)  view.findViewById(R.id.list_movies);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),3);
@@ -82,10 +86,9 @@ public class MovieSearchFragment extends Fragment implements  ListMoviesAdapter.
     public void updateMovieList(String SearchQuery) {
         volleySingleton = VolleySingleton.getsInstance();
         mRequestQueue = VolleySingleton.getmRequestQueue();
-        Spinner = (ProgressBar) mView.findViewById(R.id.progress_spin);
+
         Spinner.setIndeterminate(true);
         Spinner.setVisibility(View.VISIBLE);
-        Toast.makeText(getActivity(),getUrl(1,SearchQuery),Toast.LENGTH_LONG).show();
 
 
 
@@ -99,8 +102,8 @@ public class MovieSearchFragment extends Fragment implements  ListMoviesAdapter.
                             if (response == null || response.length() == 0) {
                                 Toast.makeText(getActivity(), "Null Object", Toast.LENGTH_LONG).show();
                             }
-                            if(response.getJSONObject("data").getInt("movie_count")==0){
-                                Snackbar.make(getView(), "No Movies Found", Snackbar.LENGTH_LONG).show();
+                            if(!response.getJSONObject("data").has("movies")){
+                                Snackbar.make(mCoordinatorLayout, "No Movies Found", Snackbar.LENGTH_INDEFINITE).show();
                             }
 
                             JSONArray moviesListArray = response.getJSONObject("data").getJSONArray(Keys.EndPointMovieList.KEYS_MOVIES);
@@ -140,7 +143,7 @@ public class MovieSearchFragment extends Fragment implements  ListMoviesAdapter.
 
                 Spinner.setVisibility(View.GONE);
 
-                Snackbar.make(mView, "Please Check Your Internet Connection!", Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(mCoordinatorLayout, "Please Check Your Internet Connection!", Snackbar.LENGTH_INDEFINITE).show();
             }
         });
         mRequestQueue.add(jsonObjectRequest);
@@ -191,7 +194,7 @@ public class MovieSearchFragment extends Fragment implements  ListMoviesAdapter.
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Snackbar.make(mView, "Please Check Your Internet Connection!", Snackbar.LENGTH_INDEFINITE).show();
+                Snackbar.make(mCoordinatorLayout, "Please Check Your Internet Connection!", Snackbar.LENGTH_INDEFINITE).show();
             }
         });
         mRequestQueue.add(jsonObjectRequest);

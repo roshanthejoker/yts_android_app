@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relativelayout"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinatorLayoutList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1d1d1d"
-    android:clipToPadding="false">
-    <!--<LinearLayout-->
+    android:background="#1d1d1d">
+    <RelativeLayout
+        android:id="@+id/relative_layout_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+        <!--<LinearLayout-->
         <!--android:id="@+id/sorting_layout"-->
         <!--android:layout_width="match_parent"-->
         <!--style="@style/AppCompatAlertDialogStyle"-->
@@ -15,59 +20,56 @@
         <!--android:layout_marginBottom="4dp"-->
         <!--&gt;-->
         <!--<android.support.v7.widget.AppCompatSpinner-->
-            <!--android:id="@+id/movie_sortby_rating_spinner"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--style="@style/AppCompatAlertDialogStyle"-->
-            <!--android:layout_weight="0.5"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scrollbarSize="23sp"-->
-            <!--&gt;-->
+        <!--android:id="@+id/movie_sortby_rating_spinner"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--style="@style/AppCompatAlertDialogStyle"-->
+        <!--android:layout_weight="0.5"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scrollbarSize="23sp"-->
+        <!--&gt;-->
         <!--</android.support.v7.widget.AppCompatSpinner>-->
 
         <!--<android.support.v7.widget.AppCompatSpinner-->
-            <!--android:id="@+id/movie_sortby_order_spinner"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_weight="0.5"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scrollbarSize="23sp"-->
-            <!--&gt;-->
+        <!--android:id="@+id/movie_sortby_order_spinner"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_weight="0.5"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scrollbarSize="23sp"-->
+        <!--&gt;-->
         <!--</android.support.v7.widget.AppCompatSpinner>-->
 
 
 
-    <!--</LinearLayout>-->
-    <ProgressBar
-        android:id="@+id/progress_spin"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_movies"
-            android:layout_width="match_parent"
+        <!--</LinearLayout>-->
+        <ProgressBar
+            android:id="@+id/progress_spin"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:clickable="true"
-            android:overScrollMode="never"
-            android:padding="10dp"
-            android:paddingTop="10dp"
-            android:scrollbars="vertical"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_centerInParent="true"/>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_movies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:clickable="true"
+                android:overScrollMode="never"
+                android:padding="10dp"
+                android:paddingTop="10dp"
+                android:scrollbars="vertical"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
 
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </RelativeLayout>
 
 
 
-
-
-
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

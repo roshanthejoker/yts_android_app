@@ -3,6 +3,7 @@ package com.thejoker.yts;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -38,19 +39,14 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
     private RecyclerView listMoviesRecyclerView;
     private  ListMoviesAdapter listMoviesAdapter;
     private int pageNumber = 1;
-    private LinearLayout linearLayout;
+    private CoordinatorLayout mCoordinatorLayout;
     private ProgressBar mSpinner;
     private SwipeRefreshLayout swipeLayout;
     private String chooseGenre;
-    private Snackbar snack;
 
 
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mView = getView().getRootView();
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +56,7 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
             chooseGenre = extras.getString("genreQuery");
         }
         mSpinner = (ProgressBar) view.findViewById(R.id.progress_spin);
-
+        mCoordinatorLayout = (CoordinatorLayout)view.findViewById(R.id.coordinatorLayoutList);
 
 
 
@@ -153,6 +149,15 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
             public void onErrorResponse(VolleyError error) {
                 swipeLayout.setRefreshing(false);
                 mSpinner.setVisibility(View.GONE);
+                final Snackbar snackBar = Snackbar.make(mCoordinatorLayout,"Connection Error",Snackbar.LENGTH_INDEFINITE);
+                snackBar.setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        updateMovieList();
+                        snackBar.dismiss();
+                    }
+                });
+                snackBar.show();
 
             }
         });
@@ -216,7 +221,15 @@ public class MovieListFragment extends Fragment implements  ListMoviesAdapter.Cl
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                Snackbar.make(mView, "Please Check Your Internet Connection!", Snackbar.LENGTH_INDEFINITE).show();
+                final Snackbar snackBar = Snackbar.make(mCoordinatorLayout,"Connection Error",Snackbar.LENGTH_INDEFINITE);
+                snackBar.setAction("Retry", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        updateMovieList();
+                        snackBar.dismiss();
+                    }
+                });
+                snackBar.show();
 
             }
         });
